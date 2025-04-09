@@ -37,20 +37,27 @@ void Model::PutObjToWindow(SnakeBodyPart &bodyPart)
   }
 }
 
-void Model::initScene()
+void Model::initScene(int botCount, const char *player2Ctl)
 {
-  auto freeCords = getFreeCords();  
+  auto freeCords = getFreeCords();	
 
-  addApple(GREEN_COLOR,
-  		   std::get<0>(freeCords),
-		   std::get<1>(freeCords));
-
-  for (int i = 0; i < DEFAULT_BOTS_COUNT; i++) { 
-	freeCords = getFreeCords();
-
+  for (int i = 0; i < botCount; i++) { 
+	freeCords = getFreeCords();	
 	addBotSnake(WHITE_COLOR, std::get<0>(freeCords),
-				std::get<1>(freeCords));
-  }  
+			    	         std::get<1>(freeCords));
+  }
+
+  freeCords = getFreeCords();   
+  addPlayerSnake(RED_COLOR, std::get<0>(freeCords), std::get<0>(freeCords),
+				 DEF_MOVE_UP_CHAR,   DEF_MOVE_DOWN_CHAR,
+				 DEF_MOVE_LEFT_CHAR, DEF_MOVE_RIGHT_CHAR);
+
+  if (player2Ctl != nullptr) {
+	freeCords = getFreeCords();   
+	addPlayerSnake(RED_COLOR, std::get<0>(freeCords), std::get<0>(freeCords),
+				   player2Ctl[0], player2Ctl[1],
+				   player2Ctl[2], player2Ctl[3]);  	
+  }
 }
 
 std::pair<int, int> Model::getFreeCords()
@@ -113,12 +120,8 @@ int Model::IsCollision(int xCord, int yCord, Snake &snake)
 }
 
 int Model::IsCollision(SnakeBodyPart &bodyPart, int xCord, int yCord)
-{
-  if (bodyPart.getX() == xCord && bodyPart.getY() == yCord) {
-	return 1;
-  }
-  
-  return 0;
+{ 
+  return bodyPart.getX() == xCord && bodyPart.getY() == yCord;
 }
 
 static int calculateDistance(Apple &apple, Snake &snake)
@@ -182,20 +185,17 @@ void Model::moveBotSnake(Snake &botSnake)
   }
 
   int closeAppleY = std::get<1>(closeAppleCords.value());
-  if (closeAppleY != 0) {
+  if (closeAppleY) {
   if (closeAppleY < 0) {
 	  botSnake.move(MOVE_UP);
 	} else {
 	  botSnake.move(MOVE_DOWN);
 	}
-}
+  }
+
   return;
 }
 
-int Model::IsCollision(SnakeBodyPart &part1, SnakeBodyPart &part2)
-{
-  return ((part1.getX() == part2.getX()) && (part1.getY() == part2.getY()));
-}
 
 int Model::IsCollision(Snake &snake, Apple &apple)
 {
@@ -231,60 +231,76 @@ void Model::placeSnakesInWindow(std::list<Snake> &snakes)
   }  
 }
 
-int Model::checkCollisions(Snake &snake1, std::list<Snake> &snakes)
+int Model::checkCollisions(const std::list<Snake>::iterator snake1, std::list<Snake> &snakes)
 {
-  for (auto &snake2 : snakes) {
-	if (&snake1 != &snake2) {
-	  if (IsCollision(snake1.getHead(), snake2.getHead())) {
+  for (auto snake2 = snakes.begin(); snake2 != snakes.end(); snake2++) {
+	if (snake1 != snake2) {
+	  if (snake1->getHead() == snake2->getHead()) {
 		return 1;
 	  }
 	}
 
-	for (auto &snake2Part : snake2.getBodyParts()) {
-	  if (IsCollision(snake1.getHead(), snake2Part)) {
-		return 1;
-	  }
-	}
+	 for (auto &snake2Part : snake2->getBodyParts()) {
+	   if (snake1->getHead() == snake2Part) {
+	 	return 1;
+	   }
+	 }
   }
+  
   return 0;
 }
 
-void Model::update(char controlChar)
-{ 
+void Model::updateScene(char controlChar)
+{
+  
   for (auto &snake : playerSnakes_) {
 	if (snake.handleOuterCtlChar(controlChar) == 0) { 
 	  snake.move(snake.getDirection());
 	}
   }
 
-  for (auto snake = playerSnakes_.begin(); snake != playerSnakes_.end();) {
-	int collisionCounter = checkCollisions(*snake, playerSnakes_);
-	collisionCounter += checkCollisions(*snake, botSnakes_);
-
-	if (collisionCounter != 0) {
-	  snake = playerSnakes_.erase(snake);
-	} else {
-	  snake++;
-	}
-  }
-  
-  for (auto snake = botSnakes_.begin(); snake != botSnakes_.end();) {
-	int collisionCounter = checkCollisions(*snake, playerSnakes_);
-	collisionCounter += checkCollisions(*snake, botSnakes_);
-
-	if (collisionCounter != 0) {
-	  snake = playerSnakes_.erase(snake);
-	} else {
-	  snake++;
-	}
-  }
-
-  int snakesCount = botSnakes_.size() + playerSnakes_.size(); 
-  
   for (auto &snake :botSnakes_) {
 	moveBotSnake(snake);
   }
   
+  for (auto snake = playerSnakes_.begin(); snake != playerSnakes_.end();) {
+	int collisionCounter = checkCollisions(snake, playerSnakes_);
+
+	if (collisionCounter != 0) {
+	  snake = playerSnakes_.erase(snake);
+	  continue;
+	}
+
+	collisionCounter = checkCollisions(snake, botSnakes_);
+	
+	if (collisionCounter != 0) {
+	  snake = playerSnakes_.erase(snake);
+	  continue;
+	}
+	
+	snake++;
+  }
+  
+  for (auto snake = botSnakes_.begin(); snake != botSnakes_.end();) {
+	int collisionCounter = checkCollisions(snake, playerSnakes_);
+
+	if (collisionCounter != 0) {
+	  snake = playerSnakes_.erase(snake);
+	  continue;
+	}
+
+	collisionCounter = checkCollisions(snake, botSnakes_);
+	
+	if (collisionCounter != 0) {
+	  snake = playerSnakes_.erase(snake);
+	  continue;
+	}
+	
+	snake++;
+  }
+
+  int snakesCount = botSnakes_.size() + playerSnakes_.size(); 
+    
   for (auto &snake : botSnakes_) {
 	eatApples(snake);
   }

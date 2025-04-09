@@ -35,6 +35,16 @@ public:
 
   void setX(int x) { bodyPartCell.setX(x); }
   void setY(int y) { bodyPartCell.setY(y); }
+
+  bool operator==(const SnakeBodyPart &other)
+  {
+	return ((getX() == other.getX()) && (getY() == other.getY()));
+  }
+
+  Cell &getCell()
+  {
+	return bodyPartCell;
+  }
 };
 
 class Snake {
@@ -83,18 +93,38 @@ public:
 
 	switch (dir) {
 	case MOVE_UP:
+	  if (dir == MOVE_DOWN) {
+		snakeHead_.setY(snakeHead_.getY() + 1);	   
+		break;
+	  }
+	  
 	  snakeHead_.setY(snakeHead_.getY() - 1);
 	  break;
 
 	case MOVE_DOWN:
+	  if (dir == MOVE_UP) {
+		snakeHead_.setY(snakeHead_.getY() - 1);	  
+		break;
+	  }
+	  
 	  snakeHead_.setY(snakeHead_.getY() + 1);
 	  break;
 	  
 	case MOVE_LEFT:
+	  if (dir == MOVE_RIGHT) {
+		snakeHead_.setX(snakeHead_.getX() + 1);	  
+		break;
+	  }
+	  
 	  snakeHead_.setX(snakeHead_.getX() - 1);
 	  break;
 	  
 	case MOVE_RIGHT:
+	  if (dir == MOVE_RIGHT) {
+		snakeHead_.setX(snakeHead_.getX() + 1);	  
+		break;
+	  }
+
 	  snakeHead_.setX(snakeHead_.getX() + 1);
 	  break;
 
@@ -121,24 +151,48 @@ public:
 	
 	switch (dir) {
 	case MOVE_UP:
+	  if (curDirection == MOVE_DOWN) {
+		dir = MOVE_DOWN;
+		snakeHead_.setY(snakeHead_.getY() + 1);	   
+		break;
+	  }
+	  
 	  snakeHead_.setY(snakeHead_.getY() - 1);
 	  break;
 
 	case MOVE_DOWN:
+	  if (curDirection == MOVE_UP) {
+		dir = MOVE_UP;
+		snakeHead_.setY(snakeHead_.getY() - 1);	  
+		break;
+	  }
+	  
 	  snakeHead_.setY(snakeHead_.getY() + 1);
 	  break;
 	  
 	case MOVE_LEFT:
+	  if (curDirection == MOVE_RIGHT) {
+		dir = MOVE_RIGHT;
+		snakeHead_.setX(snakeHead_.getX() + 1);	  
+		break;
+	  }
+	  
 	  snakeHead_.setX(snakeHead_.getX() - 1);
 	  break;
 	  
 	case MOVE_RIGHT:
+	  if (curDirection == MOVE_LEFT) {
+		dir = MOVE_LEFT;
+		snakeHead_.setX(snakeHead_.getX() - 1);	  
+		break;
+	  }
+
 	  snakeHead_.setX(snakeHead_.getX() + 1);
 	  break;
 
 	default: break;
 	}
-   	
+ 
 	moveDirection_ = dir;
 
 	snakeParts_.pop_back();

@@ -14,6 +14,8 @@ public:
 
   int getX() const { return appleCell.getX(); }
   int getY() const { return appleCell.getY(); }
+
+  Cell &getCell() { return appleCell; }
 };
 
 #endif /* APPLE_HEADER */

@@ -1,21 +1,73 @@
+#include <unistd.h>
+
 #include "../view/t_view.h"
 #include "../model/model.h"
 #include "../control/control.h"
+#include "../view/g_view.h"
 
-int main(int argc, const char *argv[])
+int main(int argc,  char * const *argv)
 {
-    Control  ctl;
-    Model    model;
-    TextView view;
+  int opt = -1;
+  int botCount = 0;
+  const char *player2Ctl = nullptr;
 
-	model.setXWinSize(view.getWinCols());
-	model.setYWinSize(view.getWinRows());
+  Control ctl;
+  Model model;
+  View *view = nullptr;  
+  
+  while ((opt = getopt(argc, argv, "b:p:tg")) != -1) {
+	switch (opt) {
+	case 'b': {	  
+	  botCount = atoi(optarg);
+	  break;
+	}
 
-	model.initScene();
-	
-    view.setModel(&model);
+	case 'p': {
+	  player2Ctl = optarg;
+	  break;
+	}
 
-    view.run(ctl);
+	case 't':{
+	  if (view == nullptr) {
+		TextView *tView = new TextView();
+		tView->setControl(&ctl);
+		
+		view = tView;
+	  }
+	  
+	  break;
+	}
 
-    return 0;
+    case 'g': {
+	  if (view == nullptr) {		
+		view = new GraphicView();
+	  }
+	  
+	  break;	  
+	}
+	  
+	default:
+	  break;  
+    }
+  }  
+
+  if (view == nullptr) {
+	TextView *tView = new TextView();
+	tView->setControl(&ctl);
+		
+	view = tView;
+  }
+  
+  model.setXWinSize(view->getWinWidth());
+  model.setYWinSize(view->getWinHeight());
+
+  model.initScene(botCount, player2Ctl);
+
+  view->setModel(&model);
+  
+  view->run();
+
+  delete view;
+  
+  return 0;
 }

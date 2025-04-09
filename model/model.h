@@ -30,10 +30,12 @@ class Model {
 
   void placeSnakesInWindow(std::list<Snake> &snakes);
 
-  int checkCollisions(Snake &snake1, std::list<Snake> &snakes);
+  int checkCollisions(const std::list<Snake>::iterator snake1, std::list<Snake> &snakes);
   
 public:
-  void initScene();
+  void initScene(int botCount, const char *player2Ctl);
+
+  void updateScene(char controlChar);
 
   Apple &addApple(TextColors_t color, int x, int y)
   {
@@ -43,7 +45,7 @@ public:
 
   Snake &addBotSnake(TextColors_t color, int x, int y)
   {
-	botSnakes_.push_back({color, x, y, DEF_MOVE_UP_CHAR, DEF_MOVE_DOWN_CHAR,
+	botSnakes_.push_back({color, x, y, DEF_MOVE_UP_CHAR,   DEF_MOVE_DOWN_CHAR,
 		                               DEF_MOVE_LEFT_CHAR, DEF_MOVE_RIGHT_CHAR});
 	return botSnakes_.back();
   };
@@ -53,7 +55,7 @@ public:
 						char moveLeftChar, char moveRightChar)
   {
 	playerSnakes_.push_back({color, x, y, moveUpChar,   moveDownChar,
-		                               moveLeftChar, moveRightChar});
+		                                  moveLeftChar, moveRightChar});
 	return botSnakes_.back();
   };
   
@@ -63,9 +65,6 @@ public:
   int IsCollision(int xCord, int yCord, Apple &apple);
   int IsCollision(Snake &snake, Apple &apple);
   int IsCollision(SnakeBodyPart &bodyPart, int xCord, int yCord);
-  int IsCollision(SnakeBodyPart &part1, SnakeBodyPart &part2);
-  
-  void update(char controlChar);
 
   std::list<Apple> &getApples() { return apples_; };
   

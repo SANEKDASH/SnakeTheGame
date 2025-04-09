@@ -19,19 +19,19 @@ void TextView::setColor(TextColors_t colorCode)
 }
 
 
-void TextView::run(Control &ctl)
+void TextView::run()
 {
   hideCursor();
   clearScreen();
   
   while (1) {
-	char controlChar = ctl.getControlChar();
+	char controlChar = ctl_->getControlChar();
 
 	if (controlChar == 'q') {
 	  break;
 	}
 
-	model_->update(controlChar);
+	model_->updateScene(controlChar);
 
 	clearScreen();
 
@@ -50,12 +50,12 @@ void TextView::run(Control &ctl)
   showCursor();
 }
 
-int TextView::getWinCols()
+int TextView::getWinWidth()
 {
   return winSize.ws_col;
 }
 
-int TextView::getWinRows()
+int TextView::getWinHeight()
 {
   return winSize.ws_row;
 }
@@ -71,8 +71,7 @@ void TextView::printText(TextColors_t colorCode, int x, int y, const char *text)
 	if (text[i] == '\n') {
 	  ++curY;
 	  curX = x;
-	}
-	else {
+	} else {
 	  printChar(colorCode, curX++, curY, text[i]);
 	}
   }

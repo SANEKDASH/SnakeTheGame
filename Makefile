@@ -2,6 +2,8 @@ CC = g++
 
 FLAGS = -lc -Wall -g -O0
 
+SFML_FLAGS =  -lsfml-graphics -lsfml-window -lsfml-system
+
 EXECUTABLE = snake
 
 SOURCES = control/*.cpp \
@@ -11,7 +13,7 @@ SOURCES = control/*.cpp \
 	  objects/*.cpp
 
 all:
-	$(CC) $(FLAGS) $(SOURCES) -o $(EXECUTABLE)
+	$(CC) $(SOURCES) $(FLAGS) -o $(EXECUTABLE) $(SFML_FLAGS)
 
 clean:
 	$(RM) *.o

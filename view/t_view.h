@@ -24,7 +24,8 @@ class TextView : public View {
   int y_ = 0;
 
   Model *model_;
-
+  Control *ctl_;
+  
   void setCords(int x, int y);
 
   void setColor(TextColors_t color_code);
@@ -41,12 +42,13 @@ class TextView : public View {
 public:
   TextView();
 
-  void run(Control &ctl);
+  void run();
 
-  void setModel(Model *newM) {model_ = newM; }
+  void setModel(Model *model)   { model_ = model; }
+  void setControl(Control *ctl) { ctl_   = ctl; };
 
-  int getWinCols();
-  int getWinRows();
+  int getWinWidth();
+  int getWinHeight();
 
   void printText(TextColors_t color_code, int x, int y, const char *text);
   void printChar(TextColors_t color_code, int x, int y, char c);
