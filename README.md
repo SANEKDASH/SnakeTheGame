@@ -32,7 +32,7 @@ Now you have `snake` executable.
 | `-b <number>` | Regulates amount of bots | amount of bots    |
 | `-g`          | Boot with the SFML view  |     -             |
 | `-t`          | Boot with terminal view  | -                |
-| `-p "udlr"`   | Adds the second player   |  'u' - keyboard char for moving up <br> 'd' - ------------//------------ down <br> 'l' - -------------//------------ left <br>'r' - ------------//------------ right |
+| `-p "udlr"`   | Adds the second player   |  'u' - keyboard char for moving up <br> 'd' - ------------//------------ down <br> 'l' - -------------//------------ left <br>'r' - -------------//------------ right |
 
 > [!WARNING]
 > Boot the `snake` executable only from the project directory.
