@@ -27,12 +27,12 @@ And run the build command:
 Now you have `snake` executable.
 
 ## Boot options
-| Флаг | Description              | Argument          |
+| Flag | Description              | Argument          |
 |------|--------------------------|-------------------|
 | `-b <number>` | Regulates amount of bots | amount of bots    |
 | `-g`          | Boot with the SFML view  |     -             |
 | `-t`          | Boot with terminal view  | -                |
-| `-p "udlr"`   | Adds the second player   |  'u' - keyboard char for moving up <br> 'd' - ------------//------------ down <br> 'l' - -------------//------------ left <br>'r' - -------------//------------ right |
+| `-p "udlr"`   | Adds the second player   |  'u' - keyboard char for moving up <br> 'd' - keyboard char for moving up down <br> 'l' - keyboard char for moving up left <br>'r' - keyboard char for moving up right |
 
 > [!WARNING]
 > Boot the `snake` executable only from the project directory.
