@@ -18,7 +18,7 @@ This is a classic game "Snake" written on C++ language.
 
 To run the snake with the SFML graphics you need to install SFML library:
 ```bash
-sudo apt-get install libsfml-dev
+  sudo apt-get install libsfml-dev
 ```
 Then go to the project directory:
 ```bash
